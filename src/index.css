@@ -1,0 +1,30 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+:root {
+  --navy: #1a1a2e;
+  --teal: #0f3460;
+  --accent: #e94560;
+  --accent-dark: #c73350;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --light-bg: #f9fafb;
+  --white: #ffffff;
+  --sidebar-w: 230px;
+}
+input, select, textarea, button { font-family: inherit; font-size: 13px; }
+button { cursor: pointer; }
+table { border-collapse: collapse; width: 100%; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
