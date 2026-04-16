@@ -1,53 +1,131 @@
-import React from 'react';
-import { Card, CardHeader, Table, Tr, Td, Pill } from '../components/UI';
+import React, { useState } from 'react';
+import { Card, Table, Tag, Button, Modal, Form, Input, DatePicker, Space, message, Row, Col } from 'antd';
+import { PlusOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import MetricCard from '../components/MetricCard';
+import { fmtDate } from '../utils/format';
 
-const deliveryData = [
-  { date: '02.03.26', lot: 400,  vasanaNo: '1165', vasanaLot: 400,  note: '846'  },
-  { date: '02.03.26', lot: 500,  vasanaNo: '1166', vasanaLot: 500,  note: '500'  },
-  { date: '05.03.26', lot: 60,   vasanaNo: '1167', vasanaLot: 60,   note: '66'   },
-  { date: '06.03.26', lot: 123,  vasanaNo: '1167', vasanaLot: 123,  note: '123'  },
-  { date: '24.03.26', lot: 127,  vasanaNo: '1167', vasanaLot: 127,  note: '127'  },
-];
+export default function Delivery({ deliveries, setDeliveries }) {
+  const [form] = Form.useForm();
+  const [modalOpen, setModalOpen] = useState(false);
 
-export default function Delivery() {
+  const totalLot  = deliveries.reduce((s, r) => s + r.lot, 0);
+  const totalVasa = deliveries.reduce((s, r) => s + r.vasanaLot, 0);
+
+  const addDelivery = (values) => {
+    const newRec = {
+      ...values,
+      id: deliveries.length + 1,
+      date: values.date?.format('YYYY-MM-DD') || dayjs().format('YYYY-MM-DD'),
+      lot: parseInt(values.lot) || 0,
+      vasanaLot: parseInt(values.vasanaLot) || 0,
+    };
+    setDeliveries(prev => [...prev, newRec]);
+    message.success('Delivery record added');
+    setModalOpen(false);
+    form.resetFields();
+  };
+
+  const columns = [
+    { title: 'Dispatch Date', dataIndex: 'date', key: 'date', width: 120, render: v => fmtDate(v) },
+    { title: 'Party', dataIndex: 'party', key: 'party', ellipsis: true, responsive: ['sm'] },
+    { title: 'Lot Sent', dataIndex: 'lot', key: 'lot', align: 'right', width: 100, render: v => <span style={{ fontWeight: 700 }}>{v}</span> },
+    { title: 'Vasana No.', dataIndex: 'vasanaNo', key: 'vasanaNo', width: 100 },
+    { title: 'Vasana Lot', dataIndex: 'vasanaLot', key: 'vasanaLot', align: 'right', width: 100, responsive: ['sm'] },
+    { title: 'Note', dataIndex: 'note', key: 'note', render: v => <span style={{ color: '#64748b' }}>{v || '–'}</span>, responsive: ['md'] },
+    {
+      title: 'Status', key: 'status', width: 110,
+      render: () => <Tag color="success" icon={<CheckCircleOutlined />}>Delivered</Tag>
+    },
+  ];
+
   return (
     <div>
-      <Card>
-        <CardHeader
-          title="Delivery & Dispatch Register"
-          right={<Pill label="March 2026" color="blue" />}
+      <div className="metric-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
+        <MetricCard label="Total Dispatches" value={deliveries.length}  sub="All records"         accent="#3b82f6" />
+        <MetricCard label="Total Lots Sent"  value={totalLot}           sub="Units dispatched"    accent="#10b981" />
+        <MetricCard label="Total Vasana Lot" value={totalVasa}          sub="Matched lots"        accent="#8b5cf6" />
+        <MetricCard label="Balance Stock"    value="5,009"              sub="Vasana No: 1164–1167" accent="#f59e0b" />
+      </div>
+
+      <Card
+        title="Delivery & Dispatch Register"
+        extra={
+          <Space>
+            <Tag color="blue">March – April 2026</Tag>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => { form.resetFields(); setModalOpen(true); }}>Add Delivery</Button>
+          </Space>
+        }
+      >
+        <Table
+          dataSource={deliveries}
+          columns={columns}
+          rowKey="id"
+          size="small"
+          scroll={{ x: 500 }}
+          pagination={{ pageSize: 15 }}
+          summary={() => (
+            <Table.Summary fixed>
+              <Table.Summary.Row style={{ background: '#f0fdf4' }}>
+                <Table.Summary.Cell index={0}><span style={{ fontWeight: 700 }}>Total</span></Table.Summary.Cell>
+                <Table.Summary.Cell index={1} />
+                <Table.Summary.Cell index={2} align="right"><span style={{ fontWeight: 800, color: '#065f46' }}>{totalLot}</span></Table.Summary.Cell>
+                <Table.Summary.Cell index={3} />
+                <Table.Summary.Cell index={4} align="right"><span style={{ fontWeight: 800, color: '#065f46' }}>{totalVasa}</span></Table.Summary.Cell>
+                <Table.Summary.Cell index={5} colSpan={2} />
+              </Table.Summary.Row>
+            </Table.Summary>
+          )}
         />
-        <Table headers={[
-          { label: 'Dispatch Date' },
-          { label: 'Lot Sent', right: true },
-          { label: 'Vasana No.' },
-          { label: 'Vasana Lot', right: true },
-          { label: 'Delivery Note' },
-          { label: 'Status' },
-        ]}>
-          {deliveryData.map((r, i) => (
-            <Tr key={i}>
-              <Td>{r.date}</Td>
-              <Td right bold>{r.lot}</Td>
-              <Td>{r.vasanaNo}</Td>
-              <Td right>{r.vasanaLot}</Td>
-              <Td muted>{r.note}</Td>
-              <Td><Pill label="Delivered" color="green" /></Td>
-            </Tr>
-          ))}
-          <Tr>
-            <Td bold>Total</Td>
-            <Td right bold>{deliveryData.reduce((s, r) => s + r.lot, 0)}</Td>
-            <Td muted>–</Td>
-            <Td right bold>{deliveryData.reduce((s, r) => s + r.vasanaLot, 0)}</Td>
-            <Td muted>–</Td>
-            <Td>–</Td>
-          </Tr>
-        </Table>
-        <div style={{ padding: '12px 14px', background: '#f9fafb', borderTop: '1px solid #e5e7eb', fontSize: 12, color: '#6b7280' }}>
-          Balance Stock: 5009 lots | Vasana No. range: 1164–1167
-        </div>
       </Card>
+
+      <Modal
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        title="Add Delivery Record"
+        footer={null}
+        width={440}
+        destroyOnClose
+      >
+        <Form form={form} layout="vertical" onFinish={addDelivery} style={{ marginTop: 8 }}>
+          <Row gutter={12}>
+            <Col span={12}>
+              <Form.Item name="date" label="Dispatch Date" initialValue={dayjs()}>
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="party" label="Party / Customer" rules={[{ required: true }]}>
+                <Input placeholder="Party name" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="lot" label="Lots Sent" rules={[{ required: true }]}>
+                <Input type="number" placeholder="0" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="vasanaNo" label="Vasana No." rules={[{ required: true }]}>
+                <Input placeholder="e.g. 1167" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="vasanaLot" label="Vasana Lot" rules={[{ required: true }]}>
+                <Input type="number" placeholder="0" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="note" label="Note (Optional)">
+                <Input placeholder="Reference/note" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button type="primary" htmlType="submit">Save Delivery</Button>
+          </div>
+        </Form>
+      </Modal>
     </div>
   );
 }

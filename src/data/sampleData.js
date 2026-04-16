@@ -1,4 +1,3 @@
-// ─── INVOICES ───────────────────────────────────────────────
 export const initialInvoices = [
   { id: '492', date: '2026-04-10', party: 'Sun Textile Elampillai', gstin: '33EYMPK25770IZK', service: 'Stiff Wash', qty: 1000, rate: 40, transport: 0, vehicle: 'TN 49 BL-3520', status: 'Pending' },
   { id: '136', date: '2026-03-30', party: 'Shri Vihaash Silks', gstin: '33FGTYPS5021J1ZT', service: 'Special Wash', qty: 2521, rate: 30, transport: 0, vehicle: '', status: 'Pending' },
@@ -8,7 +7,6 @@ export const initialInvoices = [
   { id: '407', date: '2025-11-03', party: 'R. Arasan Prakash', gstin: '', service: 'Folding Work', qty: 1706, rate: 22.5, transport: 0, vehicle: '', status: 'Paid' },
 ];
 
-// ─── BALANCE SHEET ──────────────────────────────────────────
 export const balanceData = [
   { no: 1,  name: 'Pothys',               inv: 594758,    recv: 558120,   pending: 29788,    longPend: 0 },
   { no: 2,  name: 'S S Tex',              inv: 366631.5,  recv: 334200,   pending: 25170.5,  longPend: 25170 },
@@ -43,8 +41,7 @@ export const balanceData = [
   { no: 31, name: 'Sun Tex',              inv: 1443000,   recv: 1300000,  pending: 143000,   longPend: 0 },
 ];
 
-// ─── BANK TRANSACTIONS ──────────────────────────────────────
-export const bankTransactions = [
+export const initialBankTransactions = [
   { id: 1,  date: '2026-04-02', desc: 'Transfer GRT parcel',                   credit: 0,     debit: 150 },
   { id: 2,  date: '2026-04-03', desc: 'Deposit from SARADHA TEX',               credit: 5890,  debit: 0 },
   { id: 3,  date: '2026-04-04', desc: 'Transfer palani for wood',                credit: 0,     debit: 6600 },
@@ -69,60 +66,58 @@ export const bankTransactions = [
 ];
 export const bankOpeningBalance = 1668;
 
-// ─── PURCHASES ──────────────────────────────────────────────
-export const purchaseData = [
-  { id: 1,  date: '2026-01-21', product: 'AMH', rate: 35,  qty: 150, price: 5250, mt: '',               paid: true,  paidDate: 'Paid' },
-  { id: 2,  date: '2026-01-30', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',               paid: true,  paidDate: 'Paid' },
-  { id: 3,  date: '2026-02-05', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',               paid: false, paidDate: '' },
-  { id: 4,  date: '2026-02-05', product: 'FIX', rate: 110, qty: 5,   price: 550,  mt: '',               paid: false, paidDate: '' },
-  { id: 5,  date: '2026-02-13', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '10×100=1000',    paid: true,  paidDate: '16/3' },
-  { id: 6,  date: '2026-02-17', product: 'FIX', rate: 110, qty: 10,  price: 1100, mt: '',               paid: false, paidDate: '' },
-  { id: 7,  date: '2026-03-07', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',               paid: true,  paidDate: '30/3' },
-  { id: 8,  date: '2026-03-14', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',               paid: false, paidDate: '' },
-  { id: 9,  date: '2026-03-21', product: 'FIX', rate: 110, qty: 12,  price: 1320, mt: '',               paid: false, paidDate: '' },
-  { id: 10, date: '2026-03-24', product: 'AMH', rate: 38,  qty: 200, price: 7600, mt: '',               paid: true,  paidDate: '11/4' },
-  { id: 11, date: '2026-04-01', product: 'AMH', rate: 38,  qty: 100, price: 3800, mt: '',               paid: false, paidDate: '' },
-  { id: 12, date: '2026-04-03', product: 'AMH', rate: 38,  qty: 200, price: 7600, mt: '',               paid: false, paidDate: '' },
-  { id: 13, date: '2026-04-10', product: 'AMH', rate: 39,  qty: 200, price: 7600, mt: '',               paid: false, paidDate: '' },
-  { id: 14, date: '2026-04-10', product: 'FIX', rate: 120, qty: 5,   price: 600,  mt: '',               paid: false, paidDate: '' },
+export const initialPurchases = [
+  { id: 1,  date: '2026-01-21', product: 'AMH', rate: 35,  qty: 150, price: 5250, mt: '',            paid: true,  paidDate: 'Paid' },
+  { id: 2,  date: '2026-01-30', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',            paid: true,  paidDate: 'Paid' },
+  { id: 3,  date: '2026-02-05', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',            paid: false, paidDate: '' },
+  { id: 4,  date: '2026-02-05', product: 'FIX', rate: 110, qty: 5,   price: 550,  mt: '',            paid: false, paidDate: '' },
+  { id: 5,  date: '2026-02-13', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '10×100=1000', paid: true,  paidDate: '16/3' },
+  { id: 6,  date: '2026-02-17', product: 'FIX', rate: 110, qty: 10,  price: 1100, mt: '',            paid: false, paidDate: '' },
+  { id: 7,  date: '2026-03-07', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',            paid: true,  paidDate: '30/3' },
+  { id: 8,  date: '2026-03-14', product: 'AMH', rate: 35,  qty: 200, price: 7000, mt: '',            paid: false, paidDate: '' },
+  { id: 9,  date: '2026-03-21', product: 'FIX', rate: 110, qty: 12,  price: 1320, mt: '',            paid: false, paidDate: '' },
+  { id: 10, date: '2026-03-24', product: 'AMH', rate: 38,  qty: 200, price: 7600, mt: '',            paid: true,  paidDate: '11/4' },
+  { id: 11, date: '2026-04-01', product: 'AMH', rate: 38,  qty: 100, price: 3800, mt: '',            paid: false, paidDate: '' },
+  { id: 12, date: '2026-04-03', product: 'AMH', rate: 38,  qty: 200, price: 7600, mt: '',            paid: false, paidDate: '' },
+  { id: 13, date: '2026-04-10', product: 'AMH', rate: 39,  qty: 200, price: 7600, mt: '',            paid: false, paidDate: '' },
+  { id: 14, date: '2026-04-10', product: 'FIX', rate: 120, qty: 5,   price: 600,  mt: '',            paid: false, paidDate: '' },
 ];
 
-// ─── EMPLOYEES ──────────────────────────────────────────────
 export const initialEmployees = [
-  { id: 'EMP001', name: 'Palani',        role: 'Machine Operator',  baseSalary: 18000, phone: '9876543210', joinDate: '2022-06-01', status: 'Active' },
-  { id: 'EMP002', name: 'Natraj',        role: 'Boiler Operator',   baseSalary: 16000, phone: '9876543211', joinDate: '2021-03-15', status: 'Active' },
-  { id: 'EMP003', name: 'Alakash',       role: 'Maintenance',       baseSalary: 14000, phone: '9876543212', joinDate: '2023-01-10', status: 'Active' },
-  { id: 'EMP004', name: 'Rajan',         role: 'Helper',            baseSalary: 12000, phone: '9876543213', joinDate: '2023-07-01', status: 'Active' },
-  { id: 'EMP005', name: 'Murugan',       role: 'Loading/Unloading', baseSalary: 11000, phone: '9876543214', joinDate: '2024-02-01', status: 'Active' },
-  { id: 'EMP006', name: 'Selvam',        role: 'Driver',            baseSalary: 15000, phone: '9876543215', joinDate: '2022-09-01', status: 'Active' },
+  { id: 'EMP001', name: 'Palani',   role: 'Machine Operator',  baseSalary: 18000, phone: '9876543210', joinDate: '2022-06-01', status: 'Active' },
+  { id: 'EMP002', name: 'Natraj',   role: 'Boiler Operator',   baseSalary: 16000, phone: '9876543211', joinDate: '2021-03-15', status: 'Active' },
+  { id: 'EMP003', name: 'Alakash',  role: 'Maintenance',       baseSalary: 14000, phone: '9876543212', joinDate: '2023-01-10', status: 'Active' },
+  { id: 'EMP004', name: 'Rajan',    role: 'Helper',            baseSalary: 12000, phone: '9876543213', joinDate: '2023-07-01', status: 'Active' },
+  { id: 'EMP005', name: 'Murugan',  role: 'Loading/Unloading', baseSalary: 11000, phone: '9876543214', joinDate: '2024-02-01', status: 'Active' },
+  { id: 'EMP006', name: 'Selvam',   role: 'Driver',            baseSalary: 15000, phone: '9876543215', joinDate: '2022-09-01', status: 'Active' },
 ];
 
 export const initialSalaryRecords = [
-  // March 2026
-  { id: 'SAL001', empId: 'EMP001', month: '2026-03', baseSalary: 18000, advance: 5000, deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-04', mode: 'Bank Transfer', note: '' },
-  { id: 'SAL002', empId: 'EMP002', month: '2026-03', baseSalary: 16000, advance: 0,    deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-04', mode: 'Bank Transfer', note: '' },
-  { id: 'SAL003', empId: 'EMP003', month: '2026-03', baseSalary: 14000, advance: 2000, deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-04', mode: 'Bank Transfer', note: '' },
-  { id: 'SAL004', empId: 'EMP004', month: '2026-03', baseSalary: 12000, advance: 0,    deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-04', mode: 'Cash',          note: '' },
-  { id: 'SAL005', empId: 'EMP005', month: '2026-03', baseSalary: 11000, advance: 1000, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: 'Absent 2 days' },
-  { id: 'SAL006', empId: 'EMP006', month: '2026-03', baseSalary: 15000, advance: 3000, deductions: 0, bonus: 500, paid: true, paidDate: '2026-04-05', mode: 'Bank Transfer', note: 'Overtime bonus' },
-  // April 2026
-  { id: 'SAL007', empId: 'EMP001', month: '2026-04', baseSalary: 18000, advance: 0,    deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-11', mode: 'Bank Transfer', note: '' },
-  { id: 'SAL008', empId: 'EMP002', month: '2026-04', baseSalary: 16000, advance: 0,    deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
-  { id: 'SAL009', empId: 'EMP003', month: '2026-04', baseSalary: 14000, advance: 0,    deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
-  { id: 'SAL010', empId: 'EMP004', month: '2026-04', baseSalary: 12000, advance: 0,    deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
-  { id: 'SAL011', empId: 'EMP005', month: '2026-04', baseSalary: 11000, advance: 0,    deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
-  { id: 'SAL012', empId: 'EMP006', month: '2026-04', baseSalary: 15000, advance: 0,    deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL001', empId: 'EMP001', month: '2026-04', baseSalary: 18000, advance: 0, deductions: 0, bonus: 0, paid: true,  paidDate: '2026-04-05', mode: 'Bank Transfer', note: '' },
+  { id: 'SAL002', empId: 'EMP002', month: '2026-04', baseSalary: 16000, advance: 0, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL003', empId: 'EMP003', month: '2026-04', baseSalary: 14000, advance: 0, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL004', empId: 'EMP004', month: '2026-04', baseSalary: 12000, advance: 0, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL005', empId: 'EMP005', month: '2026-04', baseSalary: 11000, advance: 0, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL006', empId: 'EMP006', month: '2026-04', baseSalary: 15000, advance: 0, deductions: 0, bonus: 0, paid: false, paidDate: '',           mode: '',              note: '' },
+  { id: 'SAL007', empId: 'EMP001', month: '2026-03', baseSalary: 18000, advance: 2000, deductions: 0, bonus: 0, paid: true,  paidDate: '2026-03-31', mode: 'Cash', note: 'Advance adj.' },
+  { id: 'SAL008', empId: 'EMP002', month: '2026-03', baseSalary: 16000, advance: 0, deductions: 0, bonus: 0, paid: true,  paidDate: '2026-03-31', mode: 'Bank Transfer', note: '' },
+];
+
+export const initialDeliveries = [
+  { id: 1, date: '2026-03-02', lot: 400,  vasanaNo: '1165', vasanaLot: 400,  note: '846',  party: 'Pothys' },
+  { id: 2, date: '2026-03-02', lot: 500,  vasanaNo: '1166', vasanaLot: 500,  note: '500',  party: 'Sun Tex' },
+  { id: 3, date: '2026-03-05', lot: 60,   vasanaNo: '1167', vasanaLot: 60,   note: '66',   party: 'VRK Fabrics' },
+  { id: 4, date: '2026-03-06', lot: 123,  vasanaNo: '1167', vasanaLot: 123,  note: '123',  party: 'Gayathri Tex' },
+  { id: 5, date: '2026-03-24', lot: 127,  vasanaNo: '1167', vasanaLot: 127,  note: '127',  party: 'Pothys' },
 ];
 
 export const partyNames = [
-  'Pothys Retail Private Ltd', 'V.R.K Fabrics', 'Sun Textile Elampillai',
-  'Shri Vihaash Silks', 'Gayathri Tex', 'A N Tex', 'PR Silks',
-  'Dhamodharan Silks', 'S S Tex', 'Vihaash Tex', 'Sri Ambika Silks',
-  'A R Tex', 'Hari Thirupathi Tex', 'Sibi Silks', 'Maheswari Tex',
-  'Gokul Silks', 'Sri Palanimurugan Tex', 'Other',
+  'Sun Textile Elampillai','Shri Vihaash Silks','Pothys Retail Private Ltd','V.R.K Fabrics',
+  'Gayathri Tex','A N Tex','PR Silks','Dhamodharan Silks','Sri Ambika Silks','S S Tex',
+  'Saradha Tex','Selvi Tex','T R S Silks','Maheswari Tex','Gokul Silks','Sibi Silks',
+  'N D Saraswathi','Appa Ramasamy','Sri Palanimurugan Tex','G S P',
 ];
 
 export const serviceTypes = [
-  'Stiff Wash', 'Soft Wash (Special)', 'Special Wash',
-  'Soft Wash', 'AMH Treatment', 'Folding Work',
+  'Stiff Wash','Soft Wash','Soft Wash (Special)','Special Wash','Folding Work','Half Wash',
 ];

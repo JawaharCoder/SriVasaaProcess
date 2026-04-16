@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/SriVasaaProcess/app/static/css/main.f92fdbd4.css",
-    "main.js": "/SriVasaaProcess/app/static/js/main.c8391aa1.js",
+    "main.css": "/SriVasaaProcess/app/static/css/main.217c8737.css",
+    "main.js": "/SriVasaaProcess/app/static/js/main.b1058bfc.js",
     "index.html": "/SriVasaaProcess/app/index.html",
-    "main.f92fdbd4.css.map": "/SriVasaaProcess/app/static/css/main.f92fdbd4.css.map",
-    "main.c8391aa1.js.map": "/SriVasaaProcess/app/static/js/main.c8391aa1.js.map"
+    "main.217c8737.css.map": "/SriVasaaProcess/app/static/css/main.217c8737.css.map",
+    "main.b1058bfc.js.map": "/SriVasaaProcess/app/static/js/main.b1058bfc.js.map"
   },
   "entrypoints": [
-    "static/css/main.f92fdbd4.css",
-    "static/js/main.c8391aa1.js"
+    "static/css/main.217c8737.css",
+    "static/js/main.b1058bfc.js"
   ]
 }

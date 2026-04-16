@@ -1,95 +1,161 @@
 import React, { useState } from 'react';
-import { MetricCard, Card, CardHeader, Pill, Table, Tr, Td, Modal, FormField, Input, Select, Btn, fmt, fmtDate } from '../components/UI';
-import { bankTransactions, bankOpeningBalance } from '../data/sampleData';
+import { Card, Table, Tag, Button, Modal, Form, Input, DatePicker, Space, Row, Col, message, Radio } from 'antd';
+import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import MetricCard from '../components/MetricCard';
+import { fmt, fmtDate, fmtShort } from '../utils/format';
+import { bankOpeningBalance } from '../data/sampleData';
 
-export default function BankTransactions() {
-  const [txns, setTxns] = useState(bankTransactions);
-  const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ date: new Date().toISOString().split('T')[0], desc: '', credit: '', debit: '' });
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+export default function BankTransactions({ txns, setTxns }) {
+  const [form] = Form.useForm();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [txnType, setTxnType] = useState('credit');
 
   const totalCredit = txns.reduce((s, t) => s + t.credit, 0);
   const totalDebit  = txns.reduce((s, t) => s + t.debit, 0);
   const closing     = bankOpeningBalance + totalCredit - totalDebit;
 
-  // Running balance for display
+  // Running balance
   let bal = bankOpeningBalance;
   const rows = txns.map(t => {
     bal += t.credit - t.debit;
     return { ...t, balance: bal };
   });
 
-  const addTxn = () => {
+  const handleAdd = (values) => {
+    const amt = parseFloat(values.amount) || 0;
     const newTxn = {
       id: txns.length + 1,
-      date: form.date,
-      desc: form.desc,
-      credit: parseFloat(form.credit) || 0,
-      debit: parseFloat(form.debit) || 0,
+      date: values.date?.format('YYYY-MM-DD') || dayjs().format('YYYY-MM-DD'),
+      desc: values.desc,
+      credit: txnType === 'credit' ? amt : 0,
+      debit:  txnType === 'debit'  ? amt : 0,
     };
     setTxns(prev => [...prev, newTxn]);
-    setAdding(false);
-    setForm({ date: new Date().toISOString().split('T')[0], desc: '', credit: '', debit: '' });
+    message.success('Transaction added');
+    setModalOpen(false);
+    form.resetFields();
   };
+
+  const columns = [
+    { title: '#', dataIndex: 'id', key: 'id', width: 48, render: v => <span style={{ color: '#94a3b8', fontSize: 12 }}>{v}</span> },
+    { title: 'Date', dataIndex: 'date', key: 'date', width: 105, render: v => fmtDate(v), responsive: ['sm'] },
+    { title: 'Description', dataIndex: 'desc', key: 'desc', ellipsis: true },
+    {
+      title: 'Credit', dataIndex: 'credit', key: 'credit', align: 'right', width: 110,
+      render: v => v > 0 ? <span style={{ color: '#10b981', fontWeight: 700 }}>+{fmt(v)}</span> : <span style={{ color: '#e2e8f0' }}>–</span>,
+    },
+    {
+      title: 'Debit', dataIndex: 'debit', key: 'debit', align: 'right', width: 110,
+      render: v => v > 0 ? <span style={{ color: '#ef4444', fontWeight: 700 }}>-{fmt(v)}</span> : <span style={{ color: '#e2e8f0' }}>–</span>,
+    },
+    {
+      title: 'Balance', dataIndex: 'balance', key: 'balance', align: 'right', width: 120,
+      render: v => <span style={{ fontWeight: 700, color: v >= 0 ? '#0f172a' : '#ef4444' }}>{fmt(v)}</span>,
+      responsive: ['md'],
+    },
+    {
+      title: 'Type', key: 'type', width: 90, align: 'center',
+      render: (_, r) => r.credit > 0
+        ? <Tag color="success" icon={<ArrowUpOutlined />}>Credit</Tag>
+        : <Tag color="error" icon={<ArrowDownOutlined />}>Debit</Tag>,
+      responsive: ['sm'],
+    },
+  ];
 
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
-        <MetricCard label="Opening Balance" value={fmt(bankOpeningBalance)} sub="Apr 2026"       accent="#3b82f6" />
-        <MetricCard label="Total Credits"   value={fmt(totalCredit)}        sub={`${txns.filter(t=>t.credit>0).length} deposits`}  accent="#10b981" />
-        <MetricCard label="Total Debits"    value={fmt(totalDebit)}         sub={`${txns.filter(t=>t.debit>0).length} transfers`}  accent="#ef4444" />
-        <MetricCard label="Closing Balance" value={fmt(closing)}            sub="Current balance" accent="#f59e0b" />
+      <div className="metric-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
+        <MetricCard label="Opening Balance" value={fmt(bankOpeningBalance)} sub="Apr 2026 start"      accent="#64748b" />
+        <MetricCard label="Total Credits"   value={fmtShort(totalCredit)}  sub={`${txns.filter(t => t.credit > 0).length} deposits`}  accent="#10b981" />
+        <MetricCard label="Total Debits"    value={fmtShort(totalDebit)}   sub={`${txns.filter(t => t.debit > 0).length} transfers`}  accent="#ef4444" />
+        <MetricCard label="Closing Balance" value={fmt(closing)}           sub="Current balance"      accent="#3b82f6" />
       </div>
 
-      <Card>
-        <CardHeader title="Bank Transactions – April 2026" right={
-          <>
-            <Pill label="HDFC Bank" color="blue" />
-            <Pill label="A/C: 50200106389545" color="gray" />
-            <Btn variant="primary" size="sm" onClick={() => setAdding(true)}>+ Add Transaction</Btn>
-          </>
-        } />
-        <Table headers={[
-          { label: '#' }, { label: 'Date' }, { label: 'Description' },
-          { label: 'Credit', right: true }, { label: 'Debit', right: true }, { label: 'Balance', right: true },
-        ]}>
-          {rows.map(t => (
-            <Tr key={t.id}>
-              <Td muted>{t.id}</Td>
-              <Td>{fmtDate(t.date)}</Td>
-              <Td>{t.desc}</Td>
-              <Td right s={{ color: t.credit ? '#10b981' : '#d1d5db' }}>{t.credit ? fmt(t.credit) : '—'}</Td>
-              <Td right s={{ color: t.debit  ? '#ef4444' : '#d1d5db' }}>{t.debit  ? fmt(t.debit)  : '—'}</Td>
-              <Td right bold>{fmt(t.balance)}</Td>
-            </Tr>
-          ))}
-        </Table>
-        <div style={{ padding: '12px 14px', background: '#f9fafb', borderTop: '1px solid #e5e7eb', display: 'flex', gap: 32 }}>
-          <span style={{ fontSize: 12, color: '#6b7280' }}>Total Entries: {txns.length}</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#10b981' }}>Total In: {fmt(totalCredit)}</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#ef4444' }}>Total Out: {fmt(totalDebit)}</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}>Net Balance: {fmt(closing)}</span>
-        </div>
+      <Card
+        title="Bank Transactions – HDFC Bank"
+        extra={
+          <Space wrap>
+            <Tag color="blue" style={{ fontSize: 12 }}>A/C: 50200106389545</Tag>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => { form.resetFields(); setModalOpen(true); }}>Add Transaction</Button>
+          </Space>
+        }
+      >
+        <Table
+          dataSource={rows}
+          columns={columns}
+          rowKey="id"
+          size="small"
+          scroll={{ x: 500 }}
+          pagination={{ pageSize: 20, showTotal: t => `${t} transactions` }}
+          rowClassName={(r) => r.credit > 0 ? 'credit-row' : 'debit-row'}
+          summary={() => (
+            <Table.Summary fixed>
+              <Table.Summary.Row style={{ background: '#f8fafc' }}>
+                <Table.Summary.Cell index={0} colSpan={3}>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>Summary</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={3} align="right">
+                  <span style={{ fontWeight: 700, color: '#10b981' }}>+{fmt(totalCredit)}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={4} align="right">
+                  <span style={{ fontWeight: 700, color: '#ef4444' }}>-{fmt(totalDebit)}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5} align="right">
+                  <span style={{ fontWeight: 800, color: '#3b82f6', fontSize: 14 }}>{fmt(closing)}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={6} />
+              </Table.Summary.Row>
+            </Table.Summary>
+          )}
+        />
       </Card>
 
-      <Modal open={adding} onClose={() => setAdding(false)} title="Add Bank Transaction" width={480}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, padding: 20 }}>
-          <FormField label="Date"><Input type="date" value={form.date} onChange={e => set('date', e.target.value)} /></FormField>
-          <FormField label="Type">
-            <Select value={form.type} onChange={e => set('type', e.target.value)}>
-              <option>Deposit (Credit)</option>
-              <option>Transfer (Debit)</option>
-            </Select>
-          </FormField>
-          <FormField label="Description" full><Input value={form.desc} onChange={e => set('desc', e.target.value)} placeholder="e.g. Deposit from Party Name" /></FormField>
-          <FormField label="Credit Amount (₹)"><Input type="number" value={form.credit} onChange={e => set('credit', e.target.value)} placeholder="0" /></FormField>
-          <FormField label="Debit Amount (₹)"><Input type="number" value={form.debit} onChange={e => set('debit', e.target.value)} placeholder="0" /></FormField>
-        </div>
-        <div style={{ padding: '14px 20px', borderTop: '1px solid #e5e7eb', display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <Btn onClick={() => setAdding(false)}>Cancel</Btn>
-          <Btn variant="primary" onClick={addTxn}>Add Transaction</Btn>
-        </div>
+      <Modal
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        title="Add Bank Transaction"
+        footer={null}
+        width={440}
+        destroyOnClose
+      >
+        <Form form={form} layout="vertical" onFinish={handleAdd}>
+          <Form.Item label="Transaction Type">
+            <Radio.Group value={txnType} onChange={e => setTxnType(e.target.value)} buttonStyle="solid">
+              <Radio.Button value="credit" style={{ color: txnType === 'credit' ? undefined : '#10b981' }}>
+                <ArrowUpOutlined /> Credit (Deposit)
+              </Radio.Button>
+              <Radio.Button value="debit" style={{ color: txnType === 'debit' ? undefined : '#ef4444' }}>
+                <ArrowDownOutlined /> Debit (Transfer)
+              </Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Row gutter={12}>
+            <Col span={12}>
+              <Form.Item name="date" label="Date" initialValue={dayjs()}>
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="amount" label="Amount (₹)" rules={[{ required: true, message: 'Enter amount' }]}>
+                <Input type="number" prefix="₹" placeholder="0" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item name="desc" label="Description" rules={[{ required: true, message: 'Enter description' }]}>
+            <Input.TextArea rows={2} placeholder="e.g. Deposit from Sun Tex" />
+          </Form.Item>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button type="primary" htmlType="submit">Add Transaction</Button>
+          </div>
+        </Form>
       </Modal>
+
+      <style>{`
+        .credit-row { background: #f0fdf4 !important; }
+        .debit-row { background: #fff !important; }
+      `}</style>
     </div>
   );
 }
